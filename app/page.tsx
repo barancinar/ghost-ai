@@ -11,10 +11,8 @@ import {
   Plus,
   Send,
   Settings,
-  Share2,
   Terminal,
-  Trash2,
-  Users
+  Trash2
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -26,20 +24,12 @@ import {
   CardContent,
   CardFooter
 } from "@/components/ui/card"
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose
-} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { EditorNavbar } from "@/components/editor/editor-navbar"
+import { ProjectSidebar } from "@/components/editor/project-sidebar"
 
 export default function Home() {
   const [prompt, setPrompt] = useState("")
@@ -50,9 +40,8 @@ export default function Home() {
     { id: 4, time: "15:43:24", user: "Alex M.", msg: "Moved node 'API Gateway' to x: 240, y: 150." },
     { id: 5, time: "15:44:01", user: "Ghost AI", msg: "Generating technical specification draft..." }
   ])
-  const [inviteEmail, setInviteEmail] = useState("")
-  const [invitedUsers, setInvitedUsers] = useState<string[]>([])
   const [activeTab, setActiveTab] = useState("nodes")
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const handleSendPrompt = (e: React.FormEvent) => {
     e.preventDefault()
@@ -67,109 +56,16 @@ export default function Home() {
     setPrompt("")
   }
 
-  const handleInvite = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!inviteEmail.trim()) return
-    setInvitedUsers((prev) => [...prev, inviteEmail])
-    const now = new Date()
-    const timeStr = now.toTimeString().split(" ")[0]
-    setLogs((prev) => [
-      ...prev,
-      { id: prev.length + 1, time: timeStr, user: "system", msg: `Invited collaborator: ${inviteEmail}` }
-    ])
-    setInviteEmail("")
-  }
-
   return (
     <main className="flex min-h-screen flex-col bg-base font-sans text-copy-primary antialiased">
-      {/* Navbar (Top Header) */}
-      <header className="flex h-14 items-center justify-between border-b border-default bg-surface/50 px-6 backdrop-blur-md sticky top-0 z-40">
-        <div className="flex items-center gap-3">
-          <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-brand to-accent-ai p-px">
-            <div className="flex h-full w-full items-center justify-center rounded-[7px] bg-[#080809]">
-              <Cpu className="h-4 w-4 text-brand" />
-            </div>
-            {/* Pulsing indicator */}
-            <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-state-success opacity-75"></span>
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-state-success"></span>
-            </span>
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="font-semibold tracking-wide text-copy-primary">Ghost AI</h1>
-              <span className="rounded bg-brand/10 px-1.5 py-0.5 text-[10px] font-medium text-brand">v1.0-alpha</span>
-            </div>
-            <p className="text-[10px] text-copy-muted">Real-time System Collaborative Workspace</p>
-          </div>
-        </div>
-
-        {/* Center Active Project Status */}
-        <div className="hidden items-center gap-6 md:flex">
-          <div className="h-1.5 w-1.5 rounded-full bg-state-success"></div>
-          <span className="text-xs font-mono text-copy-secondary">room: project-omega</span>
-          <span className="text-xs text-copy-muted">|</span>
-          <div className="flex items-center gap-1">
-            <Users className="h-3.5 w-3.5 text-copy-muted" />
-            <span className="text-xs text-copy-secondary">{2 + invitedUsers.length} active</span>
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center gap-2">
-          {/* Dialog trigger */}
-          <Dialog>
-            <DialogTrigger render={<Button variant="outline" size="sm" />}>
-              <Share2 className="h-3.5 w-3.5" />
-              <span>Share Canvas</span>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md border border-default bg-surface rounded-3xl">
-              <DialogHeader>
-                <DialogTitle className="text-copy-primary">Invite Collaborators</DialogTitle>
-                <DialogDescription className="text-copy-muted">
-                  Share this system design workspace with your team members.
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={handleInvite} className="space-y-4 py-2">
-                <div className="flex items-center gap-2">
-                  <Input
-                    placeholder="colleague@company.com"
-                    value={inviteEmail}
-                    onChange={(e) => setInviteEmail(e.target.value)}
-                    type="email"
-                    className="flex-1 bg-elevated border-default text-copy-primary rounded-xl"
-                  />
-                  <Button type="submit" size="sm">
-                    Invite
-                  </Button>
-                </div>
-                {invitedUsers.length > 0 && (
-                  <div className="space-y-2">
-                    <p className="text-xs font-semibold text-copy-secondary">Pending Invites</p>
-                    <div className="max-h-24 overflow-y-auto space-y-1 pr-1">
-                      {invitedUsers.map((email, idx) => (
-                        <div key={idx} className="flex items-center justify-between rounded-lg bg-elevated/50 p-2 text-xs border border-default">
-                          <span className="text-copy-secondary font-mono">{email}</span>
-                          <span className="text-[10px] text-state-warning">Pending</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </form>
-              <DialogFooter className="border-t border-default bg-subtle/50 p-4 -mx-4 -mb-4 rounded-b-3xl">
-                <DialogClose render={<Button variant="outline" size="sm" />}>
-                  Close
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-
-          <Button variant="default" size="sm" className="bg-brand text-black hover:bg-brand/90 font-medium">
-            <span>Export Spec</span>
-          </Button>
-        </div>
-      </header>
+      <EditorNavbar
+        isSidebarOpen={isSidebarOpen}
+        onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
+      />
+      <ProjectSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
 
       {/* Main Workspace Panels Grid */}
       <div className="flex flex-1 flex-col lg:flex-row overflow-hidden">
