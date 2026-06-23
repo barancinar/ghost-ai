@@ -19,6 +19,7 @@ export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
         "fixed top-14 left-0 bottom-0 z-30 flex w-80 flex-col border-r border-default bg-surface/95 backdrop-blur-md transition-transform duration-300 ease-in-out",
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}
+      inert={!isOpen}
     >
       {/* Header */}
       <div className="flex h-12 items-center justify-between border-b border-default px-4">

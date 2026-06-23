@@ -1,12 +1,16 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-export default async function Home() {
+export default async function EditorLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { userId } = await auth();
 
-  if (userId) {
-    redirect("/editor");
-  } else {
+  if (!userId) {
     redirect("/sign-in");
   }
+
+  return <>{children}</>;
 }

@@ -1,6 +1,6 @@
  We need the base chrome components that frame every editor screen - the top navbar and the left sidebar shell. These will be reused and extended in every chapter that follows.
 
- ### Editor Navbar
+### Editor Navbar
 
  Create `components/editor/editor-navbar.tsx`.
 
@@ -12,7 +12,7 @@
  - Right section stays empty for now
  - dark background with subtle bottom border
 
- ### Project Sidebar
+### Project Sidebar
 
  Create `components/editor/project-sidebar.tsx`.
 
@@ -27,9 +27,9 @@
     - My Projects
     - Shared
  - both tabs show empty placeholder state
- - full-width `New Project` button at he bottom with `Plus` icon  
+ - full-width `New Project` button at the bottom with `Plus` icon  
 
- ### Dialog Pattern
+### Dialog Pattern
 
  Use the existing color tokens from `globals.css` for dialog styling.
 
@@ -41,7 +41,7 @@
 
  Do not build action dialogs yet.
 
- ### Check when done
+### Check when done
 
  - new components compile without TypeScript errors
  - no lint error

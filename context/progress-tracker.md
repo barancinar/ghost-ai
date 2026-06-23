@@ -13,7 +13,8 @@ Update this file whenever the current phase, active feature, or implementation s
 ## Completed
 
 - Design System & UI Primitive Components Setup ([01-design-system.md](file:///c:/Users/baran.cinar/Desktop/ghost-ai/context/feature-specs/01-design-system.md))
-- Base Editor Chrome Layout Components ([02-editor.md](file:///c:/Users/baran.cinar/Desktop/ghost-ai/context/feature-specs/02-editor.md))
+- Base Editor Chrome Layout Components ([02-editor.md](../context/feature-specs/02-editor.md))
+- Clerk Authentication & Route Protection Setup ([03-auth.md](file:///c:/Users/baran.cinar/Desktop/ghost-ai/context/feature-specs/03-auth.md))
 
 ## In Progress
 
@@ -34,4 +35,8 @@ Update this file whenever the current phase, active feature, or implementation s
 ## Session Notes
 
 - Initiating setup of tailwind-merge, clsx, lucide-react, and shadcn/ui primitives.
+- Setting up Clerk authentication, proxy.ts middleware, and custom dark auth pages.
+- Fixed redirect loop and blank rendering screen issues by handling root `/` redirects and auth-page protection in `proxy.ts` (middleware/edge level) and setting `afterSignOutUrl="/sign-in"` on `ClerkProvider`.
+- Refactored auth marketing panels into a shared `<AuthMarketingPanel />` component, implemented UUIDs for editor logs, pinned Clerk dependencies in the root `package.json`, set up a server-side route layout to protect `/editor`, and configured proxy middleware to return 401 for unauthorized API/tRPC requests.
+
 
