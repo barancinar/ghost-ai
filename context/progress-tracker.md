@@ -13,6 +13,7 @@ Update this file whenever the current phase, active feature, or implementation s
 ## Completed
 
 - Design System & UI Primitive Components Setup ([01-design-system.md](file:///c:/Users/baran.cinar/Desktop/ghost-ai/context/feature-specs/01-design-system.md))
+- Base Editor Chrome Layout Components ([02-editor.md](file:///c:/Users/baran.cinar/Desktop/ghost-ai/context/feature-specs/02-editor.md))
 
 ## In Progress
 
