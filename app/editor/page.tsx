@@ -34,11 +34,11 @@ import { ProjectSidebar } from "@/components/editor/project-sidebar"
 export default function EditorPage() {
   const [prompt, setPrompt] = useState("")
   const [logs, setLogs] = useState([
-    { id: 1, time: "15:42:10", user: "system", msg: "Session initialized successfully." },
-    { id: 2, time: "15:42:15", user: "system", msg: "Connected to Liveblocks room 'project-omega'." },
-    { id: 3, time: "15:43:02", user: "Alex M.", msg: "Imported starter template 'Monolith Architecture'." },
-    { id: 4, time: "15:43:24", user: "Alex M.", msg: "Moved node 'API Gateway' to x: 240, y: 150." },
-    { id: 5, time: "15:44:01", user: "Ghost AI", msg: "Generating technical specification draft..." }
+    { id: "1", time: "15:42:10", user: "system", msg: "Session initialized successfully." },
+    { id: "2", time: "15:42:15", user: "system", msg: "Connected to Liveblocks room 'project-omega'." },
+    { id: "3", time: "15:43:02", user: "Alex M.", msg: "Imported starter template 'Monolith Architecture'." },
+    { id: "4", time: "15:43:24", user: "Alex M.", msg: "Moved node 'API Gateway' to x: 240, y: 150." },
+    { id: "5", time: "15:44:01", user: "Ghost AI", msg: "Generating technical specification draft..." }
   ])
   const [activeTab, setActiveTab] = useState("nodes")
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -50,8 +50,8 @@ export default function EditorPage() {
     const timeStr = now.toTimeString().split(" ")[0]
     setLogs((prev) => [
       ...prev,
-      { id: prev.length + 1, time: timeStr, user: "You", msg: `Prompted AI: "${prompt}"` },
-      { id: prev.length + 2, time: timeStr, user: "Ghost AI", msg: "Processing prompt to generate system nodes..." }
+      { id: crypto.randomUUID(), time: timeStr, user: "You", msg: `Prompted AI: "${prompt}"` },
+      { id: crypto.randomUUID(), time: timeStr, user: "Ghost AI", msg: "Processing prompt to generate system nodes..." }
     ])
     setPrompt("")
   }

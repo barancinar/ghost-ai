@@ -2,6 +2,9 @@
 
 **CRITICAL**: Cache keys MUST include userId/orgId to prevent data leaking between users.
 
+> [!WARNING]
+> `unstable_cache` is an experimental Next.js API. Its interface and behavior may change in minor or patch releases. Monitor Next.js release notes when implementing this pattern.
+
 ## User-Scoped Cache
 
 ```typescript

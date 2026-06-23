@@ -166,7 +166,7 @@ Also import shadcn CSS in your global styles:
 | Logo not showing | Put `logoImageUrl` inside `options: {}` (or `layout: {}` in Core 2) |
 | Social buttons wrong | Add `socialButtonsVariant: 'iconButton'` in `options` (or `layout` in Core 2) |
 | Styling not working | Use appearance prop, not direct CSS (unless with bring-your-own-css) |
-| Hook returns different shape | Check SDK version — Core 2 and current have completely different `useSignIn`/`useSignUp` APIs |
+| Hook returns different shape | Check SDK version — Core 2 and current have substantially different hook shapes and method namespacing |
 
 ## See Also
 

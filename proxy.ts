@@ -32,6 +32,12 @@ export const proxy = clerkMiddleware(async (auth, req) => {
   // Protect all other non-public routes
   if (!isPublicRoute(req)) {
     if (!userId) {
+      if (pathname.startsWith("/api") || pathname.startsWith("/trpc")) {
+        return NextResponse.json(
+          { error: "Unauthorized", message: "Authentication required" },
+          { status: 401 }
+        );
+      }
       return NextResponse.redirect(new URL(signInUrl, req.url));
     }
   }

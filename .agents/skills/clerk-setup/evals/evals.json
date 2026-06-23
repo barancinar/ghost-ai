@@ -54,7 +54,7 @@
         "Does NOT create middleware.ts or proxy.ts (not applicable to SPAs)",
         "Does NOT reference Next.js-specific patterns like server components or auth()",
         "Shows SignIn/SignUp components or redirect-based auth flow",
-        "Sets up NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY or VITE_CLERK_PUBLISHABLE_KEY env var"
+        "Sets up VITE_CLERK_PUBLISHABLE_KEY env var"
       ]
     },
     {

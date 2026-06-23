@@ -37,5 +37,6 @@ Update this file whenever the current phase, active feature, or implementation s
 - Initiating setup of tailwind-merge, clsx, lucide-react, and shadcn/ui primitives.
 - Setting up Clerk authentication, proxy.ts middleware, and custom dark auth pages.
 - Fixed redirect loop and blank rendering screen issues by handling root `/` redirects and auth-page protection in `proxy.ts` (middleware/edge level) and setting `afterSignOutUrl="/sign-in"` on `ClerkProvider`.
+- Refactored auth marketing panels into a shared `<AuthMarketingPanel />` component, implemented UUIDs for editor logs, pinned Clerk dependencies in the root `package.json`, set up a server-side route layout to protect `/editor`, and configured proxy middleware to return 401 for unauthorized API/tRPC requests.
 
 

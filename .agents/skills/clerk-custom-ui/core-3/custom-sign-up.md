@@ -22,7 +22,6 @@ const { signUp, errors, fetchStatus } = useSignUp()
 
 ```typescript
 const { error } = await signUp.password({
-  emailAddress: 'user@example.com',
   password: 'securePassword123',
   firstName: 'Jane',  // optional
   lastName: 'Doe',    // optional
