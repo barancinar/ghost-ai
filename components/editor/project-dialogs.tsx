@@ -43,8 +43,8 @@ export function ProjectDialogs({
   return (
     <>
       {/* Create Project Dialog */}
-      <Dialog open={activeDialog === "create"} onOpenChange={(open) => !open && onClose()}>
-        <DialogContent className="rounded-3xl border border-default bg-surface max-w-sm">
+      <Dialog open={activeDialog === "create"} onOpenChange={(open) => { if (!open && !isLoading) onClose() }}>
+        <DialogContent showCloseButton={!isLoading} className="rounded-3xl border border-default bg-surface max-w-sm">
           <form onSubmit={onCreateSubmit} className="space-y-4">
             <DialogHeader>
               <DialogTitle className="text-copy-primary font-semibold">Create Project</DialogTitle>
@@ -86,7 +86,7 @@ export function ProjectDialogs({
               </Button>
               <Button
                 type="submit"
-                disabled={isLoading || !nameInput.trim()}
+                disabled={isLoading || !nameInput.trim() || !slugPreview}
                 className="bg-brand text-black hover:bg-brand/90 font-medium rounded-xl flex items-center gap-1.5"
               >
                 {isLoading ? (
@@ -104,8 +104,8 @@ export function ProjectDialogs({
       </Dialog>
 
       {/* Rename Project Dialog */}
-      <Dialog open={activeDialog === "rename"} onOpenChange={(open) => !open && onClose()}>
-        <DialogContent className="rounded-3xl border border-default bg-surface max-w-sm">
+      <Dialog open={activeDialog === "rename"} onOpenChange={(open) => { if (!open && !isLoading) onClose() }}>
+        <DialogContent showCloseButton={!isLoading} className="rounded-3xl border border-default bg-surface max-w-sm">
           <form onSubmit={onRenameSubmit} className="space-y-4">
             <DialogHeader>
               <DialogTitle className="text-copy-primary font-semibold">Rename Project</DialogTitle>
@@ -159,8 +159,8 @@ export function ProjectDialogs({
       </Dialog>
 
       {/* Delete Project Dialog */}
-      <Dialog open={activeDialog === "delete"} onOpenChange={(open) => !open && onClose()}>
-        <DialogContent className="rounded-3xl border border-default bg-surface max-w-sm">
+      <Dialog open={activeDialog === "delete"} onOpenChange={(open) => { if (!open && !isLoading) onClose() }}>
+        <DialogContent showCloseButton={!isLoading} className="rounded-3xl border border-default bg-surface max-w-sm">
           <div className="space-y-4">
             <DialogHeader>
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-state-error/10 text-state-error mb-2">

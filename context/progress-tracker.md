@@ -15,7 +15,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Design System & UI Primitive Components Setup ([01-design-system.md](file:///c:/Users/baran.cinar/Desktop/ghost-ai/context/feature-specs/01-design-system.md))
 - Base Editor Chrome Layout Components ([02-editor.md](../context/feature-specs/02-editor.md))
 - Clerk Authentication & Route Protection Setup ([03-auth.md](file:///c:/Users/baran.cinar/Desktop/ghost-ai/context/feature-specs/03-auth.md))
-- Project Dialogs & Editor Home ([04-project-dialogs.md](file:///c:/Users/baran.cinar/Desktop/ghost-ai/context/feature-specs/04-project-dialogs.md))
+- Project Dialogs & Editor Home ([04-project-dialogs.md](../context/feature-specs/04-project-dialogs.md))
 
 ## In Progress
 

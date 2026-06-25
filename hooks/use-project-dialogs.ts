@@ -39,12 +39,14 @@ export function useProjectDialogs() {
     onSubmit: (name: string, slug: string) => void
   ) => {
     e.preventDefault()
-    if (!nameInput.trim()) return
+    const trimmedName = nameInput.trim()
+    const slug = slugify(trimmedName)
+    if (!trimmedName || !slug) return
 
     startTransition(async () => {
       // Simulate API call delay
       await new Promise((resolve) => setTimeout(resolve, 600))
-      onSubmit(nameInput.trim(), slugPreview)
+      onSubmit(trimmedName, slug)
       closeDialog()
     })
   }

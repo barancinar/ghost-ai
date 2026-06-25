@@ -66,16 +66,19 @@ export default function EditorPage() {
     handleDeleteConfirm,
   } = useProjectDialogs()
 
+  const appendLog = (user: string, msg: string) => {
+    const timeStr = new Date().toTimeString().split(" ")[0]
+    setLogs((prev) => [
+      ...prev,
+      { id: crypto.randomUUID(), time: timeStr, user, msg }
+    ])
+  }
+
   const handleSendPrompt = (e: React.FormEvent) => {
     e.preventDefault()
     if (!prompt.trim()) return
-    const now = new Date()
-    const timeStr = now.toTimeString().split(" ")[0]
-    setLogs((prev) => [
-      ...prev,
-      { id: crypto.randomUUID(), time: timeStr, user: "You", msg: `Prompted AI: "${prompt}"` },
-      { id: crypto.randomUUID(), time: timeStr, user: "Ghost AI", msg: "Processing prompt to generate system nodes..." }
-    ])
+    appendLog("You", `Prompted AI: "${prompt}"`)
+    appendLog("Ghost AI", "Processing prompt to generate system nodes...")
     setPrompt("")
   }
 
@@ -91,17 +94,7 @@ export default function EditorPage() {
 
   const handleSelectProject = (project: Project) => {
     setActiveProject(project)
-    const now = new Date()
-    const timeStr = now.toTimeString().split(" ")[0]
-    setLogs((prev) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        time: timeStr,
-        user: "system",
-        msg: `Connected to Liveblocks room '${project.slug}'.`
-      }
-    ])
+    appendLog("system", `Connected to Liveblocks room '${project.slug}'.`)
   }
 
   const handleCreateProject = (name: string, slug: string) => {
@@ -113,17 +106,7 @@ export default function EditorPage() {
     }
     setProjects((prev) => [...prev, newProject])
     setActiveProject(newProject)
-    const now = new Date()
-    const timeStr = now.toTimeString().split(" ")[0]
-    setLogs((prev) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        time: timeStr,
-        user: "system",
-        msg: `Created new project "${name}". Connected to room '${slug}'.`
-      }
-    ])
+    appendLog("system", `Created new project "${name}". Connected to room '${slug}'.`)
   }
 
   const handleRenameProject = (id: string, name: string) => {
@@ -136,17 +119,7 @@ export default function EditorPage() {
         prev ? { ...prev, name, slug: newSlug } : null
       )
     }
-    const now = new Date()
-    const timeStr = now.toTimeString().split(" ")[0]
-    setLogs((prev) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        time: timeStr,
-        user: "system",
-        msg: `Renamed project to "${name}".`
-      }
-    ])
+    appendLog("system", `Renamed project to "${name}".`)
   }
 
   const handleDeleteProject = (id: string) => {
@@ -156,17 +129,7 @@ export default function EditorPage() {
       setActiveProject(null)
     }
     if (projectToDelete) {
-      const now = new Date()
-      const timeStr = now.toTimeString().split(" ")[0]
-      setLogs((prev) => [
-        ...prev,
-        {
-          id: crypto.randomUUID(),
-          time: timeStr,
-          user: "system",
-          msg: `Deleted project "${projectToDelete.name}".`
-        }
-      ])
+      appendLog("system", `Deleted project "${projectToDelete.name}".`)
     }
   }
 
