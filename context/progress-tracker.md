@@ -16,6 +16,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Base Editor Chrome Layout Components ([02-editor.md](../context/feature-specs/02-editor.md))
 - Clerk Authentication & Route Protection Setup ([03-auth.md](file:///c:/Users/baran.cinar/Desktop/ghost-ai/context/feature-specs/03-auth.md))
 - Project Dialogs & Editor Home ([04-project-dialogs.md](../context/feature-specs/04-project-dialogs.md))
+- Prisma Schema And Data Layer ([05-prisma.md](file:///c:/Users/baran.cinar/Desktop/ghost-ai/context/feature-specs/05-prisma.md))
 
 ## In Progress
 
@@ -40,5 +41,6 @@ Update this file whenever the current phase, active feature, or implementation s
 - Fixed redirect loop and blank rendering screen issues by handling root `/` redirects and auth-page protection in `proxy.ts` (middleware/edge level) and setting `afterSignOutUrl="/sign-in"` on `ClerkProvider`.
 - Refactored auth marketing panels into a shared `<AuthMarketingPanel />` component, implemented UUIDs for editor logs, pinned Clerk dependencies in the root `package.json`, set up a server-side route layout to protect `/editor`, and configured proxy middleware to return 401 for unauthorized API/tRPC requests.
 - Implemented `/editor` home screen when no project is active, built ProjectDialogs for creating/renaming/deleting projects with slugify generator and loading/transition overlays, updated ProjectSidebar to handle project categorizations, hover rename/delete buttons, and mobile scrim backdrop closures. Fixed page height scrolling/layout shift bug by constraining main wrapper to `h-screen overflow-hidden` and added undefined array safety checks in sidebar filters.
+- Implemented the database layer using Prisma v7 multi-file schema support. Created the `Project` and `ProjectCollaborator` models inside `prisma/models/project.prisma`, instantiated the cached client singleton `lib/prisma.ts` with direct/Accelerate connection branching, applied the initial database schema migration, and verified build compilation.
 
 
