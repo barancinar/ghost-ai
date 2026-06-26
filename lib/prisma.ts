@@ -1,5 +1,6 @@
 import pg from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaPostgresAdapter } from "@prisma/adapter-ppg";
 import { PrismaClient } from "@/app/generated/prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
 
@@ -21,6 +22,10 @@ function createAccelerateClient() {
 }
 
 function createDirectClient() {
+  if (databaseUrl.includes(".prisma.io")) {
+    const adapter = new PrismaPostgresAdapter({ connectionString: databaseUrl });
+    return new PrismaClient({ adapter });
+  }
   const pool = new pg.Pool({ connectionString: databaseUrl });
   const adapter = new PrismaPg(pool);
   return new PrismaClient({ adapter });
@@ -35,3 +40,4 @@ export const prisma =
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
 }
+
