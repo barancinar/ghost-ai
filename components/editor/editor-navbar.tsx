@@ -60,6 +60,7 @@ export function EditorNavbar({
               size="sm"
               className="bg-surface border-default text-copy-secondary hover:text-copy-primary hover:bg-elevated gap-1.5 h-8 text-xs rounded-xl"
               onClick={onOpenShare}
+              aria-label="Share project"
             >
               <Share2 className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Share</span>

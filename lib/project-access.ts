@@ -16,7 +16,9 @@ export async function getClerkIdentity(): Promise<ClerkIdentity | null> {
   if (!userId) return null
 
   const user = await currentUser()
-  const emails = user?.emailAddresses.map((e) => e.emailAddress) || []
+  const emails = user?.emailAddresses
+    .filter((e) => e.verification?.status === "verified")
+    .map((e) => e.emailAddress) || []
   const primaryEmail = user?.primaryEmailAddress?.emailAddress || null
 
   return {

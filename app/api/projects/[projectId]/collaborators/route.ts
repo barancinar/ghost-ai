@@ -62,8 +62,8 @@ export async function GET(
     // Resolve email addresses of current user to match collaborator list
     let isCollaborator = false
     if (!isOwner) {
-      const currentUserProfile = await client.users.getUser(userId).catch(() => null)
-      const currentUserEmails = currentUserProfile?.emailAddresses.map((ea) => ea.emailAddress.toLowerCase()) || []
+      const currentUserProfile = await client.users.getUser(userId)
+      const currentUserEmails = currentUserProfile.emailAddresses.map((ea) => ea.emailAddress.toLowerCase())
       isCollaborator = project.collaborators.some((collab: { email: string }) =>
         currentUserEmails.includes(collab.email.toLowerCase())
       )
@@ -193,8 +193,8 @@ export async function POST(
 
     // Check if the owner is trying to invite themselves
     const client = await clerkClient()
-    const ownerUser = await client.users.getUser(project.ownerId).catch(() => null)
-    const ownerEmails = ownerUser?.emailAddresses.map((ea) => ea.emailAddress.toLowerCase()) || []
+    const ownerUser = await client.users.getUser(project.ownerId)
+    const ownerEmails = ownerUser.emailAddresses.map((ea) => ea.emailAddress.toLowerCase())
     
     if (ownerEmails.includes(email)) {
       return NextResponse.json(

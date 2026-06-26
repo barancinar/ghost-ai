@@ -192,6 +192,7 @@ export function EditorClient({ projects, activeProject }: EditorClientProps) {
 
       {activeProject && (
         <ShareDialog
+          key={activeProject.id}
           isOpen={isShareOpen}
           onClose={() => setIsShareOpen(false)}
           projectId={activeProject.id}
