@@ -12,15 +12,15 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Completed
 
-- Design System & UI Primitive Components Setup ([01-design-system.md](file:///c:/Users/baran.cinar/Desktop/ghost-ai/context/feature-specs/01-design-system.md))
+- Design System & UI Primitive Components Setup ([01-design-system.md](../context/feature-specs/01-design-system.md))
 - Base Editor Chrome Layout Components ([02-editor.md](../context/feature-specs/02-editor.md))
-- Clerk Authentication & Route Protection Setup ([03-auth.md](file:///c:/Users/baran.cinar/Desktop/ghost-ai/context/feature-specs/03-auth.md))
+- Clerk Authentication & Route Protection Setup ([03-auth.md](../context/feature-specs/03-auth.md))
 - Project Dialogs & Editor Home ([04-project-dialogs.md](../context/feature-specs/04-project-dialogs.md))
-- Prisma Schema And Data Layer ([05-prisma.md](file:///c:/Users/baran.cinar/Desktop/ghost-ai/context/feature-specs/05-prisma.md))
+- Prisma Schema And Data Layer ([05-prisma.md](../context/feature-specs/05-prisma.md))
 
 ## In Progress
 
-- None yet.
+- Project REST API routes (06-project-apis.md)
 
 ## Next Up
 

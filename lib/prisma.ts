@@ -3,7 +3,11 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@/app/generated/prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
 
-const databaseUrl = process.env.DATABASE_URL || "";
+const url = process.env.DATABASE_URL;
+if (!url) {
+  throw new Error("DATABASE_URL environment variable is required but is unset or empty.");
+}
+const databaseUrl: string = url;
 
 // Prevent multiple instances of Prisma Client in development
 const globalForPrisma = globalThis as unknown as {
