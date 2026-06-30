@@ -24,6 +24,12 @@ Update this file whenever the current phase, active feature, or implementation s
 - Collaborative Canvas Setup ([10-liveblocks-setup.md](../context/feature-specs/10-liveblocks-setup.md))
 - Base Canvas Integration ([11-base-canvas.md](../context/feature-specs/11-base-canvas.md))
 - Shape Panel UI & Drag-and-Drop Creation ([12-shape-panel.md](../context/feature-specs/12-shape-panel.md))
+- Shape rendering and drag preview ([13-node-shape.md](../context/feature-specs/13-node-shape.md))
+- Node resizing and inline label editing ([14-node-editing.md](../context/feature-specs/14-node-editing.md))
+- Node Color Toolbar floating UI and Liveblocks synchronization ([15-node-color-toolbar.md](../context/feature-specs/15-node-color-toolbar.md))
+- Custom edge behavior, connection handles, and inline label editing ([16-edge-behavior.md](../context/feature-specs/16-edge-behavior.md))
+- Canvas zoom, fit view, and Liveblocks undo/redo history controls with global keyboard shortcuts ([17-canvas-ergonomics.md.md](../context/feature-specs/17-canvas-ergonomics.md.md))
+- Starter Templates library and import modal ([18-starter-templates.md](../context/feature-specs/18-starter-templates.md))
 
 ## In Progress
 
@@ -60,10 +66,9 @@ Update this file whenever the current phase, active feature, or implementation s
 - Created `types/canvas.ts` and implemented a Liveblocks-backed React Flow collaborative canvas. Configured `<CanvasWrapper />` with a custom class-based `ErrorBoundary`, `ClientSideSuspense` loading spinner, and error retry state, then mounted it inside `EditorClient` (replacing the static placeholder).
 - Fixed editor canvas drag-and-drop pipeline and visual card/floating styling anomalies. Moved `onDragOver` and `onDrop` events directly onto the `<ReactFlow />` component, added explicit overrides in `globals.css` to force base background coloring and remove any borders, shadows, or border-radius.
 - Refactored the right AI Assistant sidebar to be positioned as floating/fixed over the canvas, matching the left sidebar pattern, and supported smooth entrance/exit slide transitions with box shadow elevation and `inert` focus-trapping when closed. Adjusted the left sidebar translation offsets to completely eliminate peeking borders when collapsed.
-
-
-
-
-
-
-
+- Replaced placeholder node shapes rendering with CSS-based rectangles, pills, and circles, and scaling SVG-based diamonds, hexagons, and cylinders. Designed specific stroke, color, and drop-shadow styling (glowing on selection) that adapts to each shape layout.
+- Added a shape drag-and-drop preview system by generating dynamic, semi-transparent ghost elements and configuring them via the native HTML5 `setDragImage` event transfer interface during drag start. Verified compiled production build with full TypeScript checking.
+- Implemented node resizing and inline label editing. Selected nodes render a custom dark-themed `NodeResizer` (using CSS variables `--accent-primary` and `--bg-base`). Double-clicking a node toggles interactive label editing inside a centered auto-growing `<textarea>` with full propagation controls to prevent canvas drag/pan and coordinate live syncing via Liveblocks.
+- Implemented a floating color toolbar above selected nodes to update both background and text color pairs. Embedded the toolbar within the `CanvasNode` client component (visible when selected and not editing), configured it with 8 predefined theme colors matching `NODE_COLORS`, applied a custom scaling and glow effect on hover, and ensured interaction safety with `nodrag nopan nowheel` pointer event propagation blocks. Added updateColor callback mapping in `CollaborativeCanvas` to sync modifications with the collaborative canvas state instantly.
+- Replaced default canvas edges with custom step-routed edges, styled connection handles on all 4 sides as subtle white circles with a dark border that fade in on hover, registered the custom `CanvasEdge` renderer with dynamic arrowhead selection (active vs dimmed), configured default edge options, and implemented inline label editing utilizing auto-growing text inputs inside React Flow's `EdgeLabelRenderer` with full event isolation.
+- Implemented Canvas Ergonomics controls. Added a floating `CanvasControls` pill component at the bottom-left containing animated zoom, fit view, and Liveblocks undo/redo status-aware buttons. Created `hooks/useKeyboardShortcuts.ts` to bind global key event listeners for zoom and undo/redo operations with typing field validation.

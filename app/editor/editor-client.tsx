@@ -17,6 +17,8 @@ import { EditorNavbar } from "@/components/editor/editor-navbar"
 import { ProjectSidebar } from "@/components/editor/project-sidebar"
 import { ProjectDialogs } from "@/components/editor/project-dialogs"
 import { ShareDialog } from "@/components/editor/share-dialog"
+import { StarterTemplatesModal } from "@/components/editor/starter-templates-modal"
+import { CanvasTemplate } from "@/components/editor/starter-templates"
 import { useProjectActions } from "@/hooks/useProjectActions"
 import { Project } from "@/types/project"
 import { CanvasWrapper } from "@/components/editor/canvas-wrapper"
@@ -33,6 +35,7 @@ export function EditorClient({ projects, activeProject }: EditorClientProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isAiSidebarOpen, setIsAiSidebarOpen] = useState(false)
   const [isShareOpen, setIsShareOpen] = useState(false)
+  const [isTemplatesOpen, setIsTemplatesOpen] = useState(false)
 
   const {
     activeDialog,
@@ -54,6 +57,12 @@ export function EditorClient({ projects, activeProject }: EditorClientProps) {
     router.push(`/editor/${project.id}`)
   }
 
+  const handleImportTemplate = (template: CanvasTemplate) => {
+    const event = new CustomEvent("import-canvas-template", { detail: template });
+    window.dispatchEvent(event);
+    setIsTemplatesOpen(false);
+  };
+
   return (
     <main className="flex h-screen flex-col bg-base font-sans text-copy-primary antialiased overflow-hidden">
       <EditorNavbar
@@ -63,6 +72,7 @@ export function EditorClient({ projects, activeProject }: EditorClientProps) {
         isAiSidebarOpen={isAiSidebarOpen}
         onToggleAiSidebar={() => setIsAiSidebarOpen((prev) => !prev)}
         onOpenShare={() => setIsShareOpen(true)}
+        onOpenTemplates={() => setIsTemplatesOpen(true)}
       />
       
       <ProjectSidebar
@@ -180,6 +190,14 @@ export function EditorClient({ projects, activeProject }: EditorClientProps) {
           projectId={activeProject.id}
           projectName={activeProject.name}
           isOwner={activeProject.isOwner}
+        />
+      )}
+
+      {activeProject && (
+        <StarterTemplatesModal
+          isOpen={isTemplatesOpen}
+          onClose={() => setIsTemplatesOpen(false)}
+          onImport={handleImportTemplate}
         />
       )}
     </main>

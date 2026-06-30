@@ -38,9 +38,17 @@ export interface CanvasNodeData {
   label: string;
   color: NodeColor;
   shape: NodeShape;
+  updateLabel?: (label: string) => void;
+  updateColor?: (color: NodeColor) => void;
+  [key: string]: unknown;
+}
+
+export interface CanvasEdgeData {
+  label?: string;
+  updateLabel?: (label: string) => void;
   [key: string]: unknown;
 }
 
 // Custom node and edge types requested by specification
 export type canvasNode = Node<CanvasNodeData>;
-export type canvasEdge = Edge;
+export type canvasEdge = Edge<CanvasEdgeData>;
