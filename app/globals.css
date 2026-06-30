@@ -120,3 +120,17 @@
     @apply font-sans;
   }
 }
+
+/* Infinite Design Canvas Overrides */
+.react-flow {
+  background-color: var(--bg-base) !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.react-flow__pane {
+  background-color: var(--bg-base) !important;
+}

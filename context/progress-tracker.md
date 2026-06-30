@@ -21,6 +21,9 @@ Update this file whenever the current phase, active feature, or implementation s
 - Wired Editor Home & Project Dialogs to API ([07-wire-editor-home.md](../context/feature-specs/07-wire-editor-home.md))
 - Built `/editor/[roomId]` Workspace Shell with Server access control and updated layout ([08-editor-workspace-shell.md](../context/feature-specs/08-editor-workspace-shell.md))
 - Added Share Dialog UI and REST API collaborators endpoint ([09-share-dialog.md](../context/feature-specs/09-share-dialog.md))
+- Collaborative Canvas Setup ([10-liveblocks-setup.md](../context/feature-specs/10-liveblocks-setup.md))
+- Base Canvas Integration ([11-base-canvas.md](../context/feature-specs/11-base-canvas.md))
+- Shape Panel UI & Drag-and-Drop Creation ([12-shape-panel.md](../context/feature-specs/12-shape-panel.md))
 
 ## In Progress
 
@@ -28,11 +31,12 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Next Up
 
-- Collaborative Canvas Setup
+- Phase 2: Collaborative Canvas Features & AI Generation
 
 ## Open Questions
 
 - None.
+
 
 ## Architecture Decisions
 
@@ -52,6 +56,12 @@ Update this file whenever the current phase, active feature, or implementation s
 - Resolved Prisma connection timeout (`ETIMEDOUT`) and SSL warning issue in local development environment. By branching in `lib/prisma.ts` to instantiate `PrismaPostgresAdapter` from `@prisma/adapter-ppg` when connecting to `*.prisma.io` hosts, database connections are established over port 443 (HTTPS/WebSocket) instead of direct TCP port 5432.
 - Created `lib/project-access.ts` containing Clerk identity extraction and workspace member/owner checking. Added centering dark layout for `AccessDenied` view when project lookup fails or rights are absent. Migrated routes to `/editor/[roomId]` dynamic segment using access control checks server-side. Refactored workspace shell in `EditorClient` to feature project header name, sharing action, toggleable right-hand AI assistant placeholder, and centered main canvas dot grid template.
 - Implemented `app/api/projects/[projectId]/collaborators` REST endpoints supporting collaborator lists (`GET`), invites (`POST`), and removals (`DELETE`). Integrated Clerk Backend API `getUserList()` to query display names and avatars from emails in bulk. Created `<ShareDialog />` allowing project link copies, new invites, and members list management, showing read-only states for collaborators. Wired the Share button inside the top navbar.
+- Installed `@liveblocks/node` server-side dependencies. Configured Liveblocks `Presence` and `UserMeta` types in `liveblocks.config.ts`. Created cached server client in `lib/liveblocks.ts` with a deterministic color mapping helper. Implemented the dynamic `POST /api/liveblocks-auth` route handler to authorize collaborator room access, verifying Clerk session identity and project collaborator permissions.
+- Created `types/canvas.ts` and implemented a Liveblocks-backed React Flow collaborative canvas. Configured `<CanvasWrapper />` with a custom class-based `ErrorBoundary`, `ClientSideSuspense` loading spinner, and error retry state, then mounted it inside `EditorClient` (replacing the static placeholder).
+- Fixed editor canvas drag-and-drop pipeline and visual card/floating styling anomalies. Moved `onDragOver` and `onDrop` events directly onto the `<ReactFlow />` component, added explicit overrides in `globals.css` to force base background coloring and remove any borders, shadows, or border-radius.
+- Refactored the right AI Assistant sidebar to be positioned as floating/fixed over the canvas, matching the left sidebar pattern, and supported smooth entrance/exit slide transitions with box shadow elevation and `inert` focus-trapping when closed. Adjusted the left sidebar translation offsets to completely eliminate peeking borders when collapsed.
+
+
 
 
 
