@@ -45,8 +45,8 @@ export function ProjectSidebar({
 
       <aside
         className={cn(
-          "fixed top-14 left-0 bottom-0 z-30 flex w-80 flex-col border-r border-default bg-surface/95 backdrop-blur-md transition-transform duration-300 ease-in-out",
-          isOpen ? "translate-x-0" : "-translate-x-full"
+          "fixed top-14 left-0 bottom-0 z-30 flex w-80 flex-col border-r border-default bg-surface/95 backdrop-blur-md shadow-2xl shadow-black/40 transition-transform duration-300 ease-in-out",
+          isOpen ? "translate-x-0" : "-translate-x-[calc(100%+8px)]"
         )}
         inert={!isOpen}
       >
