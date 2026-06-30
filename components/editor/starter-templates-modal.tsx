@@ -294,15 +294,18 @@ export function StarterTemplatesModal({
 }: StarterTemplatesModalProps) {
   const [selectedTemplateId, setSelectedTemplateId] = React.useState<string | null>(null);
 
-  // Reset selected template when modal opens
-  React.useEffect(() => {
-    if (isOpen) {
-      setSelectedTemplateId(null);
-    }
-  }, [isOpen]);
+  const handleClose = () => {
+    setSelectedTemplateId(null);
+    onClose();
+  };
+
+  const handleImport = (template: CanvasTemplate) => {
+    setSelectedTemplateId(null);
+    onImport(template);
+  };
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) handleClose(); }}>
       <DialogContent className="rounded-3xl border border-default bg-surface max-w-5xl md:max-w-6xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-8">
         <DialogHeader className="space-y-2">
           <div className="flex items-center gap-2">
@@ -366,7 +369,7 @@ export function StarterTemplatesModal({
                   )}
                   onClick={(e) => {
                     e.stopPropagation();
-                    onImport(template);
+                    handleImport(template);
                   }}
                 >
                   Import Template
