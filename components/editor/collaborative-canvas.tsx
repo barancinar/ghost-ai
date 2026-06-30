@@ -285,7 +285,7 @@ export function CollaborativeCanvas() {
               markerHeight="6"
               orient="auto-start-reverse"
             >
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--text-secondary)" opacity="0.4" />
+              <path d="M 0 0 L 10 5 L 0 10 z" style={{ fill: "var(--text-secondary)" }} opacity="0.4" />
             </marker>
             <marker
               id="arrow-active"
@@ -296,7 +296,7 @@ export function CollaborativeCanvas() {
               markerHeight="6"
               orient="auto-start-reverse"
             >
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent-primary)" />
+              <path d="M 0 0 L 10 5 L 0 10 z" style={{ fill: "var(--accent-primary)" }} />
             </marker>
           </defs>
         </svg>

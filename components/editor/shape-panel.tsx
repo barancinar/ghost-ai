@@ -80,13 +80,13 @@ function createDragPreview(shape: NodeShape, width: number, height: number): HTM
     el.style.backgroundColor = "transparent";
     let svgContent = "";
     if (shape === "diamond") {
-      svgContent = `<polygon points="50,2 98,50 50,98 2,50" fill="#1F1F1F" stroke="var(--border-default)" stroke-width="1.5" vector-effect="non-scaling-stroke" />`;
+      svgContent = `<polygon points="50,2 98,50 50,98 2,50" fill="#1F1F1F" style="stroke: var(--border-default);" stroke-width="1.5" vector-effect="non-scaling-stroke" />`;
     } else if (shape === "hexagon") {
-      svgContent = `<polygon points="25,2 75,2 98,50 75,98 25,98 2,50" fill="#1F1F1F" stroke="var(--border-default)" stroke-width="1.5" vector-effect="non-scaling-stroke" />`;
+      svgContent = `<polygon points="25,2 75,2 98,50 75,98 25,98 2,50" fill="#1F1F1F" style="stroke: var(--border-default);" stroke-width="1.5" vector-effect="non-scaling-stroke" />`;
     } else if (shape === "cylinder") {
       svgContent = `
-        <path d="M 2,15 L 2,85 A 48,13 0 0 0 98,85 L 98,15 Z" fill="#1F1F1F" stroke="var(--border-default)" stroke-width="1.5" vector-effect="non-scaling-stroke" />
-        <ellipse cx="50" cy="15" rx="48" ry="13" fill="#1F1F1F" stroke="var(--border-default)" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+        <path d="M 2,15 L 2,85 A 48,13 0 0 0 98,85 L 98,15 Z" fill="#1F1F1F" style="stroke: var(--border-default);" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+        <ellipse cx="50" cy="15" rx="48" ry="13" fill="#1F1F1F" style="stroke: var(--border-default);" stroke-width="1.5" vector-effect="non-scaling-stroke" />
       `;
     }
     el.innerHTML = `

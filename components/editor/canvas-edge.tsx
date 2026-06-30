@@ -59,13 +59,22 @@ export function CanvasEdge({
     }
   }, [inputValue, isEditing]);
 
-  const handleDoubleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const isEditingRef = useRef(false);
+
+  const startEditing = () => {
+    isEditingRef.current = true;
     setIsEditing(true);
   };
 
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    startEditing();
+  };
+
   const saveLabel = () => {
+    if (!isEditingRef.current) return;
+    isEditingRef.current = false;
     setIsEditing(false);
     if (updateLabel && inputValue !== label) {
       updateLabel(inputValue);
@@ -77,8 +86,13 @@ export function CanvasEdge({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === "Escape") {
+    if (e.key === "Enter") {
       saveLabel();
+      e.preventDefault();
+    } else if (e.key === "Escape") {
+      isEditingRef.current = false;
+      setIsEditing(false);
+      setInputValue(label);
       e.preventDefault();
     }
     e.stopPropagation();

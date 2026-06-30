@@ -28,7 +28,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Node resizing and inline label editing ([14-node-editing.md](../context/feature-specs/14-node-editing.md))
 - Node Color Toolbar floating UI and Liveblocks synchronization ([15-node-color-toolbar.md](../context/feature-specs/15-node-color-toolbar.md))
 - Custom edge behavior, connection handles, and inline label editing ([16-edge-behavior.md](../context/feature-specs/16-edge-behavior.md))
-- Canvas zoom, fit view, and Liveblocks undo/redo history controls with global keyboard shortcuts ([17-canvas-ergonomics.md.md](../context/feature-specs/17-canvas-ergonomics.md.md))
+- Canvas zoom, fit view, and Liveblocks undo/redo history controls with global keyboard shortcuts ([17-canvas-ergonomics.md](../context/feature-specs/17-canvas-ergonomics.md))
 - Starter Templates library and import modal ([18-starter-templates.md](../context/feature-specs/18-starter-templates.md))
 
 ## In Progress

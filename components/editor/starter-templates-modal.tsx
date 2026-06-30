@@ -3,6 +3,7 @@
 import * as React from "react";
 import { LayoutGrid, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -291,6 +292,15 @@ export function StarterTemplatesModal({
   onClose,
   onImport,
 }: StarterTemplatesModalProps) {
+  const [selectedTemplateId, setSelectedTemplateId] = React.useState<string | null>(null);
+
+  // Reset selected template when modal opens
+  React.useEffect(() => {
+    if (isOpen) {
+      setSelectedTemplateId(null);
+    }
+  }, [isOpen]);
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
       <DialogContent className="rounded-3xl border border-default bg-surface max-w-5xl md:max-w-6xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-8">
@@ -312,45 +322,58 @@ export function StarterTemplatesModal({
           <div className="space-y-0.5">
             <span className="font-bold">Destructive Action Warning</span>
             <p className="text-[11px] opacity-90 leading-relaxed">
-              Importing a template will **completely clear** all current nodes and edges on your canvas. This change is synchronized for all active collaborators.
+              Importing a template will <strong className="font-bold">completely clear</strong> all current nodes and edges on your canvas. This change is synchronized for all active collaborators.
             </p>
           </div>
         </div>
 
         {/* Templates Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-3">
-          {CANVAS_TEMPLATES.map((template) => (
-            <div
-              key={template.id}
-              onClick={() => onImport(template)}
-              className="flex flex-col gap-4 rounded-2xl bg-elevated/30 border border-default p-5 hover:border-brand/50 hover:bg-elevated/80 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-brand/5 group cursor-pointer relative overflow-hidden"
-            >
-              {/* Preview */}
-              <TemplatePreview template={template} />
-
-              {/* Title & Description */}
-              <div className="flex-1 flex flex-col gap-1.5">
-                <h4 className="text-sm font-semibold text-copy-primary group-hover:text-brand transition-colors duration-200">
-                  {template.name}
-                </h4>
-                <p className="text-[11px] text-copy-muted leading-relaxed">
-                  {template.description}
-                </p>
-              </div>
-
-              {/* Import Action Button */}
-              <Button
-                size="sm"
-                className="w-full bg-elevated hover:bg-subtle text-copy-primary border border-default text-xs rounded-xl h-9 font-semibold mt-2 transition-all duration-300 group-hover:bg-brand group-hover:text-black group-hover:border-transparent group-hover:shadow-md group-hover:shadow-brand/10"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onImport(template);
-                }}
+          {CANVAS_TEMPLATES.map((template) => {
+            const isSelected = selectedTemplateId === template.id;
+            return (
+              <div
+                key={template.id}
+                onClick={() => setSelectedTemplateId(template.id)}
+                className={cn(
+                  "flex flex-col gap-4 rounded-2xl border p-5 transition-all duration-300 relative overflow-hidden group cursor-pointer",
+                  isSelected
+                    ? "border-brand bg-elevated/90 -translate-y-1.5 shadow-xl shadow-brand/10"
+                    : "border-default bg-elevated/30 hover:border-brand/50 hover:bg-elevated/80 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-brand/5"
+                )}
               >
-                Import Template
-              </Button>
-            </div>
-          ))}
+                {/* Preview */}
+                <TemplatePreview template={template} />
+
+                {/* Title & Description */}
+                <div className="flex-1 flex flex-col gap-1.5">
+                  <h4 className="text-sm font-semibold text-copy-primary group-hover:text-brand transition-colors duration-200">
+                    {template.name}
+                  </h4>
+                  <p className="text-[11px] text-copy-muted leading-relaxed">
+                    {template.description}
+                  </p>
+                </div>
+
+                {/* Import Action Button */}
+                <Button
+                  size="sm"
+                  className={cn(
+                    "w-full text-xs rounded-xl h-9 font-semibold mt-2 transition-all duration-300",
+                    isSelected
+                      ? "bg-brand text-black border-transparent shadow-md shadow-brand/10 hover:bg-brand/90"
+                      : "bg-elevated hover:bg-subtle text-copy-primary border border-default"
+                  )}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onImport(template);
+                  }}
+                >
+                  Import Template
+                </Button>
+              </div>
+            );
+          })}
         </div>
       </DialogContent>
     </Dialog>

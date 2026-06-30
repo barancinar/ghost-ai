@@ -25,6 +25,7 @@ export function CanvasControls() {
         onClick={() => zoomOut({ duration: 200 })}
         className="flex h-8 w-8 items-center justify-center rounded-full text-copy-secondary hover:text-brand hover:bg-subtle hover:scale-105 active:scale-95 transition-all duration-150"
         title="Zoom Out (-)"
+        aria-label="Zoom Out"
       >
         <ZoomOut className="h-4 w-4" />
       </button>
@@ -33,6 +34,7 @@ export function CanvasControls() {
         onClick={() => fitView({ duration: 200 })}
         className="flex h-8 w-8 items-center justify-center rounded-full text-copy-secondary hover:text-brand hover:bg-subtle hover:scale-105 active:scale-95 transition-all duration-150"
         title="Fit View"
+        aria-label="Fit View"
       >
         <Maximize className="h-4 w-4" />
       </button>
@@ -41,6 +43,7 @@ export function CanvasControls() {
         onClick={() => zoomIn({ duration: 200 })}
         className="flex h-8 w-8 items-center justify-center rounded-full text-copy-secondary hover:text-brand hover:bg-subtle hover:scale-105 active:scale-95 transition-all duration-150"
         title="Zoom In (+)"
+        aria-label="Zoom In"
       >
         <ZoomIn className="h-4 w-4" />
       </button>
@@ -59,6 +62,7 @@ export function CanvasControls() {
             : "text-copy-muted opacity-30 cursor-not-allowed"
         )}
         title="Undo (Ctrl+Z)"
+        aria-label="Undo"
       >
         <Undo className="h-4 w-4" />
       </button>
@@ -73,6 +77,7 @@ export function CanvasControls() {
             : "text-copy-muted opacity-30 cursor-not-allowed"
         )}
         title="Redo (Ctrl+Shift+Z / Ctrl+Y)"
+        aria-label="Redo"
       >
         <Redo className="h-4 w-4" />
       </button>

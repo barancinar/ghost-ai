@@ -50,13 +50,22 @@ export function CanvasNode({ data, selected }: NodeProps) {
     }
   }, [inputValue, isEditing]);
 
-  const handleDoubleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const isEditingRef = useRef(false);
+
+  const startEditing = () => {
+    isEditingRef.current = true;
     setIsEditing(true);
   };
 
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    startEditing();
+  };
+
   const handleBlur = () => {
+    if (!isEditingRef.current) return;
+    isEditingRef.current = false;
     setIsEditing(false);
     if (updateLabel && inputValue !== nodeData?.label) {
       updateLabel(inputValue);
@@ -66,17 +75,16 @@ export function CanvasNode({ data, selected }: NodeProps) {
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
-    if (updateLabel) {
-      updateLabel(newValue);
-    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Escape") {
+      isEditingRef.current = false;
       setIsEditing(false);
       setInputValue(nodeData?.label || "");
       e.preventDefault();
     } else if (e.key === "Enter" && !e.shiftKey) {
+      isEditingRef.current = false;
       setIsEditing(false);
       if (updateLabel && inputValue !== nodeData?.label) {
         updateLabel(inputValue);
@@ -99,7 +107,7 @@ export function CanvasNode({ data, selected }: NodeProps) {
         isVisible={selected && !isEditing}
         minWidth={60}
         minHeight={40}
-        handleClassName="hover:!bg-brand transition-colors"
+        handleClassName="hover:bg-brand! transition-colors"
         handleStyle={{
           width: "8px",
           height: "8px",
@@ -307,25 +315,25 @@ export function CanvasNode({ data, selected }: NodeProps) {
         type="source"
         position={Position.Top}
         id="t"
-        className="opacity-0 group-hover:opacity-100 transition-all duration-150 !bg-white hover:!bg-brand !border !border-[#080809] !w-2 !h-2 hover:!scale-125 !shadow-md cursor-crosshair"
+        className="opacity-0 group-hover:opacity-100 transition-all duration-150 bg-white! hover:bg-brand! border! border-[#080809]! w-2! h-2! hover:scale-125! shadow-md! cursor-crosshair"
       />
       <Handle
         type="source"
         position={Position.Right}
         id="r"
-        className="opacity-0 group-hover:opacity-100 transition-all duration-150 !bg-white hover:!bg-brand !border !border-[#080809] !w-2 !h-2 hover:!scale-125 !shadow-md cursor-crosshair"
+        className="opacity-0 group-hover:opacity-100 transition-all duration-150 bg-white! hover:bg-brand! border! border-[#080809]! w-2! h-2! hover:scale-125! shadow-md! cursor-crosshair"
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="b"
-        className="opacity-0 group-hover:opacity-100 transition-all duration-150 !bg-white hover:!bg-brand !border !border-[#080809] !w-2 !h-2 hover:!scale-125 !shadow-md cursor-crosshair"
+        className="opacity-0 group-hover:opacity-100 transition-all duration-150 bg-white! hover:bg-brand! border! border-[#080809]! w-2! h-2! hover:scale-125! shadow-md! cursor-crosshair"
       />
       <Handle
         type="source"
         position={Position.Left}
         id="l"
-        className="opacity-0 group-hover:opacity-100 transition-all duration-150 !bg-white hover:!bg-brand !border !border-[#080809] !w-2 !h-2 hover:!scale-125 !shadow-md cursor-crosshair"
+        className="opacity-0 group-hover:opacity-100 transition-all duration-150 bg-white! hover:bg-brand! border! border-[#080809]! w-2! h-2! hover:scale-125! shadow-md! cursor-crosshair"
       />
     </div>
   );
