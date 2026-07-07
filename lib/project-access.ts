@@ -1,30 +1,54 @@
-import { auth, currentUser } from "@clerk/nextjs/server"
+import { auth, currentUser, getAuth, clerkClient } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 
 export interface ClerkIdentity {
   userId: string
   primaryEmail: string | null
   emails: string[]
+  firstName: string | null
+  lastName: string | null
+  username: string | null
+  imageUrl: string | null
 }
 
 /**
  * Retrieves the current authenticated user's ID, primary email, and all verified emails.
  * Returns null if the user is unauthenticated.
  */
-export async function getClerkIdentity(): Promise<ClerkIdentity | null> {
-  const { userId } = await auth()
+export async function getClerkIdentity(req?: Request): Promise<ClerkIdentity | null> {
+  let userId: string | null = null
+  let user: any = null
+
+  if (req) {
+    const authObj = getAuth(req as any)
+    userId = authObj.userId
+    if (userId) {
+      const client = await clerkClient()
+      user = await client.users.getUser(userId)
+    }
+  } else {
+    const authObj = await auth()
+    userId = authObj.userId
+    if (userId) {
+      user = await currentUser()
+    }
+  }
+
   if (!userId) return null
 
-  const user = await currentUser()
   const emails = user?.emailAddresses
-    .filter((e) => e.verification?.status === "verified")
-    .map((e) => e.emailAddress) || []
+    .filter((e: any) => e.verification?.status === "verified")
+    .map((e: any) => e.emailAddress) || []
   const primaryEmail = user?.primaryEmailAddress?.emailAddress || null
 
   return {
     userId,
     primaryEmail,
     emails,
+    firstName: user?.firstName || null,
+    lastName: user?.lastName || null,
+    username: user?.username || null,
+    imageUrl: user?.imageUrl || null,
   }
 }
 

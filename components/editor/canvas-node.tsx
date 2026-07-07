@@ -148,13 +148,13 @@ export function CanvasNode({ data, selected }: NodeProps) {
                   borderColor: isActive
                     ? "var(--accent-primary)"
                     : isHovered
-                    ? color.text
-                    : "rgba(255, 255, 255, 0.15)",
+                      ? color.text
+                      : "rgba(255, 255, 255, 0.15)",
                   boxShadow: isActive
                     ? `0 0 6px ${color.text}`
                     : isHovered
-                    ? `0 0 8px ${color.text}80`
-                    : "none",
+                      ? `0 0 8px ${color.text}80`
+                      : "none",
                   transform: isHovered ? "scale(1.15)" : "scale(1)",
                 }}
                 aria-label={`Select color pair ${index + 1}`}
@@ -243,9 +243,8 @@ export function CanvasNode({ data, selected }: NodeProps) {
         )
       ) : (
         <div
-          className={`absolute inset-0 w-full h-full border transition-all duration-200 ${
-            shape === "circle" || shape === "pill" ? "rounded-full" : "rounded-xl"
-          }`}
+          className={`absolute inset-0 w-full h-full border transition-all duration-200 ${shape === "circle" || shape === "pill" ? "rounded-full" : "rounded-xl"
+            }`}
           style={{
             backgroundColor: fill,
             borderColor,
@@ -256,9 +255,8 @@ export function CanvasNode({ data, selected }: NodeProps) {
 
       {/* Centered label layer */}
       <div
-        className={`absolute inset-0 flex items-center justify-center p-3 ${
-          isEditing ? "pointer-events-auto" : "pointer-events-none"
-        }`}
+        className={`absolute inset-0 flex items-center justify-center p-3 ${isEditing ? "pointer-events-auto" : "pointer-events-none"
+          }`}
       >
         {isEditing ? (
           <textarea
@@ -279,10 +277,10 @@ export function CanvasNode({ data, selected }: NodeProps) {
                 shape === "diamond"
                   ? "65%"
                   : shape === "circle"
-                  ? "75%"
-                  : shape === "hexagon"
-                  ? "80%"
-                  : "90%",
+                    ? "75%"
+                    : shape === "hexagon"
+                      ? "80%"
+                      : "90%",
               marginTop: shape === "cylinder" ? "8px" : "0px",
             }}
           />
@@ -294,10 +292,10 @@ export function CanvasNode({ data, selected }: NodeProps) {
                 shape === "diamond"
                   ? "65%"
                   : shape === "circle"
-                  ? "75%"
-                  : shape === "hexagon"
-                  ? "80%"
-                  : "90%",
+                    ? "75%"
+                    : shape === "hexagon"
+                      ? "80%"
+                      : "90%",
               marginTop: shape === "cylinder" ? "8px" : "0px",
             }}
           >
@@ -311,10 +309,25 @@ export function CanvasNode({ data, selected }: NodeProps) {
       </div>
 
       {/* Connection Handles on 4 sides (Top, Right, Bottom, Left) */}
+      {/* Top Handles */}
+      <Handle
+        type="target"
+        position={Position.Top}
+        id="t-target"
+        className="opacity-0 group-hover:opacity-100 transition-all duration-150 bg-white! hover:bg-brand! border! border-[#080809]! w-2! h-2! hover:scale-125! shadow-md! cursor-crosshair"
+      />
       <Handle
         type="source"
         position={Position.Top}
         id="t"
+        className="opacity-0 group-hover:opacity-100 transition-all duration-150 bg-white! hover:bg-brand! border! border-[#080809]! w-2! h-2! hover:scale-125! shadow-md! cursor-crosshair"
+      />
+
+      {/* Right Handles */}
+      <Handle
+        type="target"
+        position={Position.Right}
+        id="r-target"
         className="opacity-0 group-hover:opacity-100 transition-all duration-150 bg-white! hover:bg-brand! border! border-[#080809]! w-2! h-2! hover:scale-125! shadow-md! cursor-crosshair"
       />
       <Handle
@@ -323,10 +336,26 @@ export function CanvasNode({ data, selected }: NodeProps) {
         id="r"
         className="opacity-0 group-hover:opacity-100 transition-all duration-150 bg-white! hover:bg-brand! border! border-[#080809]! w-2! h-2! hover:scale-125! shadow-md! cursor-crosshair"
       />
+
+      {/* Bottom Handles */}
+      <Handle
+        type="target"
+        position={Position.Bottom}
+        id="b-target"
+        className="opacity-0 group-hover:opacity-100 transition-all duration-150 bg-white! hover:bg-brand! border! border-[#080809]! w-2! h-2! hover:scale-125! shadow-md! cursor-crosshair"
+      />
       <Handle
         type="source"
         position={Position.Bottom}
         id="b"
+        className="opacity-0 group-hover:opacity-100 transition-all duration-150 bg-white! hover:bg-brand! border! border-[#080809]! w-2! h-2! hover:scale-125! shadow-md! cursor-crosshair"
+      />
+
+      {/* Left Handles */}
+      <Handle
+        type="target"
+        position={Position.Left}
+        id="l-target"
         className="opacity-0 group-hover:opacity-100 transition-all duration-150 bg-white! hover:bg-brand! border! border-[#080809]! w-2! h-2! hover:scale-125! shadow-md! cursor-crosshair"
       />
       <Handle
