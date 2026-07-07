@@ -15,20 +15,27 @@ const globalForPrisma = globalThis as unknown as {
   prisma?: any;
 };
 
+// Set PRISMA_LOG=1 to surface each query and its duration when profiling slow
+// endpoints; otherwise stay quiet except for warnings/errors.
+const logLevels: ("query" | "info" | "warn" | "error")[] = process.env.PRISMA_LOG
+  ? ["query", "info", "warn", "error"]
+  : ["warn", "error"];
+
 function createAccelerateClient() {
   return new PrismaClient({
     accelerateUrl: databaseUrl,
+    log: logLevels,
   }).$extends(withAccelerate());
 }
 
 function createDirectClient() {
   if (databaseUrl.includes(".prisma.io")) {
     const adapter = new PrismaPostgresAdapter({ connectionString: databaseUrl });
-    return new PrismaClient({ adapter });
+    return new PrismaClient({ adapter, log: logLevels });
   }
   const pool = new pg.Pool({ connectionString: databaseUrl });
   const adapter = new PrismaPg(pool);
-  return new PrismaClient({ adapter });
+  return new PrismaClient({ adapter, log: logLevels });
 }
 
 export const prisma =

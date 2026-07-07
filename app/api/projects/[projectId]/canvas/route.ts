@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server"
-import { getClerkIdentity, checkProjectAccess } from "@/lib/project-access"
+import { getClerkIdentity, checkProjectAccess, invalidateProjectCache } from "@/lib/project-access"
 import { prisma } from "@/lib/prisma"
 import { put, get } from "@vercel/blob"
+import { startPerf } from "@/lib/perf"
 
 export const dynamic = "force-dynamic"
 
@@ -9,6 +10,7 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ projectId: string }> }
 ) {
+  const perf = startPerf("GET /api/projects/[projectId]/canvas")
   try {
     let identity = await getClerkIdentity(request)
     if (request.headers.get("x-test-bypass") === "true") {
@@ -38,6 +40,7 @@ export async function GET(
     }
 
     const access = await checkProjectAccess(projectId, identity.userId, identity.emails)
+    perf.mark("auth+access")
     if (!access) {
       return NextResponse.json(
         { error: "Forbidden", message: "You do not have access to this project" },
@@ -47,6 +50,7 @@ export async function GET(
 
     const { project } = access
     if (!project.canvasJsonPath) {
+      perf.end()
       return NextResponse.json({ nodes: [], edges: [] })
     }
 
@@ -54,10 +58,13 @@ export async function GET(
     const blob = await get(project.canvasJsonPath, { access: "private" })
     if (!blob) {
       console.error(`Failed to retrieve canvas state from blob URL: ${project.canvasJsonPath}`)
+      perf.end()
       return NextResponse.json({ nodes: [], edges: [] })
     }
 
     const canvasData = await new Response(blob.stream).json()
+    perf.mark("blob-read")
+    perf.end()
     return NextResponse.json(canvasData)
   } catch (error) {
     console.error("Error in GET /api/projects/[projectId]/canvas:", error)
@@ -72,6 +79,7 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ projectId: string }> }
 ) {
+  const perf = startPerf("PUT /api/projects/[projectId]/canvas")
   try {
     let identity = await getClerkIdentity(request)
     if (request.headers.get("x-test-bypass") === "true") {
@@ -101,6 +109,7 @@ export async function PUT(
     }
 
     const access = await checkProjectAccess(projectId, identity.userId, identity.emails)
+    perf.mark("auth+access")
     if (!access) {
       return NextResponse.json(
         { error: "Forbidden", message: "You do not have access to this project" },
@@ -125,6 +134,7 @@ export async function PUT(
         { status: 400 }
       )
     }
+    perf.mark("parse-body")
 
     // Upload to Vercel Blob
     const blob = await put(`canvas/${projectId}.json`, JSON.stringify(body), {
@@ -132,12 +142,17 @@ export async function PUT(
       contentType: "application/json",
       addRandomSuffix: true,
     })
+    perf.mark("blob-write")
 
     // Save returned URL to project
     await prisma.project.update({
       where: { id: projectId },
       data: { canvasJsonPath: blob.url },
     })
+    // canvasJsonPath changed — drop any cached copy so the next GET reads fresh.
+    invalidateProjectCache(projectId)
+    perf.mark("db-update")
+    perf.end()
 
     return NextResponse.json({ success: true, url: blob.url })
   } catch (error) {

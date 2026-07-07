@@ -1,13 +1,16 @@
 import { NextResponse } from "next/server";
 import { getClerkIdentity, checkProjectAccess } from "@/lib/project-access";
 import { getLiveblocksClient, getUserColor } from "@/lib/liveblocks";
+import { startPerf } from "@/lib/perf";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
+  const perf = startPerf("POST /api/liveblocks-auth");
   try {
     // 1. Require Clerk authentication
     const identity = await getClerkIdentity(request);
+    perf.mark("auth");
     if (!identity) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
@@ -31,6 +34,7 @@ export async function POST(request: Request) {
       identity.userId,
       identity.emails
     );
+    perf.mark("access-check");
     if (!accessResult) {
       return new NextResponse("Forbidden", { status: 403 });
     }
@@ -38,16 +42,10 @@ export async function POST(request: Request) {
     // Get the Liveblocks server client instance lazily
     const liveblocks = getLiveblocksClient();
 
-    // 4. Ensure the Liveblocks room exists (create only if needed)
-    try {
-      await liveblocks.getOrCreateRoom(projectId, {
-        defaultAccesses: [], // Private room by default
-      });
-    } catch (roomError) {
-      // Log error but don't fail the request unless room creation is absolutely required
-      console.error(`Error ensuring Liveblocks room ${projectId} exists:`, roomError);
-    }
-
+    // Note: we intentionally do NOT call `getOrCreateRoom` here. It added a full
+    // Liveblocks Backend API round-trip to every auth request; the room is
+    // created automatically (private by default under the access-token model) on
+    // first client connection, so `session.authorize()` below is sufficient.
 
     // 5. Generate deterministic user metadata
     const displayName =
@@ -74,6 +72,8 @@ export async function POST(request: Request) {
 
     // Authorize and return response
     const { status, body } = await session.authorize();
+    perf.mark("liveblocks-authorize");
+    perf.end();
     return new Response(body, { status });
   } catch (error) {
     console.error("Error in Liveblocks auth route:", error);

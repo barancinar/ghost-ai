@@ -1,6 +1,8 @@
 import { auth, clerkClient } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { getCachedClerkUser, getCachedProject, invalidateProjectCache } from "@/lib/project-access"
+import { startPerf } from "@/lib/perf"
 
 interface ClerkUserListItem {
   id: string
@@ -20,6 +22,7 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ projectId: string }> }
 ) {
+  const perf = startPerf("GET /api/projects/[projectId]/collaborators")
   try {
     const { userId } = await auth()
     if (!userId) {
@@ -37,13 +40,9 @@ export async function GET(
       )
     }
 
-    // 1. Fetch project to check access and determine the owner
-    const project = await prisma.project.findUnique({
-      where: { id: projectId },
-      include: {
-        collaborators: true
-      }
-    })
+    // 1. Fetch project to check access and determine the owner (shared cache)
+    const project = await getCachedProject(projectId)
+    perf.mark("db-project")
 
     if (!project) {
       return NextResponse.json(
@@ -53,17 +52,27 @@ export async function GET(
     }
 
     // 2. Access control check
-    const client = await clerkClient()
-    const ownerUser = await client.users.getUser(project.ownerId).catch(() => null)
-    
-    // Check if the current user has access (either project owner or collaborator)
     const isOwner = project.ownerId === userId
-    
-    // Resolve email addresses of current user to match collaborator list
+    const collaboratorEmails = project.collaborators.map((c: { email: string }) => c.email)
+
+    // The owner profile, the current user's profile (only needed to resolve
+    // access for non-owners), and the bulk collaborator lookup are all
+    // independent Clerk Backend API calls — fire them concurrently instead of
+    // chaining the awaits. Profile lookups are served from the shared TTL cache.
+    const client = await clerkClient()
+    const [ownerUser, currentUserProfile, clerkUserListResponse] = await Promise.all([
+      getCachedClerkUser(project.ownerId),
+      isOwner ? Promise.resolve(null) : getCachedClerkUser(userId),
+      collaboratorEmails.length > 0
+        ? client.users.getUserList({ emailAddress: collaboratorEmails })
+        : Promise.resolve({ data: [] as ClerkUserListItem[] }),
+    ])
+    perf.mark("clerk-profiles")
+
+    // Check if the current user has access (either project owner or collaborator)
     let isCollaborator = false
-    if (!isOwner) {
-      const currentUserProfile = await client.users.getUser(userId)
-      const currentUserEmails = currentUserProfile.emailAddresses.map((ea) => ea.emailAddress.toLowerCase())
+    if (!isOwner && currentUserProfile) {
+      const currentUserEmails = currentUserProfile.emailAddresses.map((ea: { emailAddress: string }) => ea.emailAddress.toLowerCase())
       isCollaborator = project.collaborators.some((collab: { email: string }) =>
         currentUserEmails.includes(collab.email.toLowerCase())
       )
@@ -76,16 +85,8 @@ export async function GET(
       )
     }
 
-    // 3. Fetch collaborator profiles in bulk from Clerk
-    const collaboratorEmails = project.collaborators.map((c: { email: string }) => c.email)
-    let clerkUsers: ClerkUserListItem[] = []
-
-    if (collaboratorEmails.length > 0) {
-      const usersResponse = await client.users.getUserList({
-        emailAddress: collaboratorEmails
-      })
-      clerkUsers = (usersResponse.data || []) as ClerkUserListItem[]
-    }
+    // 3. Collaborator profiles fetched in bulk from Clerk (above, in parallel)
+    const clerkUsers = (clerkUserListResponse.data || []) as ClerkUserListItem[]
 
     // Map Clerk users by lowercase email address
     const userMap = new Map<string, { name: string; avatar: string }>()
@@ -123,6 +124,7 @@ export async function GET(
       }
     })
 
+    perf.end()
     return NextResponse.json({
       owner: ownerInfo,
       collaborators: collaboratorInfos
@@ -227,6 +229,8 @@ export async function POST(
         email
       }
     })
+    // Collaborator list changed — drop the cached project record.
+    invalidateProjectCache(projectId)
 
     return NextResponse.json(newCollaborator)
   } catch (error) {
@@ -307,6 +311,8 @@ export async function DELETE(
         { status: 404 }
       )
     }
+    // Collaborator list changed — drop the cached project record.
+    invalidateProjectCache(projectId)
 
     return NextResponse.json({ success: true })
   } catch (error) {
