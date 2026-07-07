@@ -57,6 +57,8 @@ Update this file whenever the current phase, active feature, or implementation s
 - None.
 
 
+- Fixed Trigger.dev **production deploy** failure ("DATABASE_URL environment variable is required" while importing `trigger/generate-spec.ts`). The `deploy` build indexes task files by importing them, but `lib/prisma.ts` threw at module-load time when `DATABASE_URL` was unset. Refactored `lib/prisma.ts` to a lazy `Proxy`-backed singleton: the client (and its `DATABASE_URL` check) is now created on first property access rather than at import, matching the existing lazy pattern in `lib/liveblocks.ts`. Kept the export effectively `any` to preserve prior delegate typing. Typecheck clean. Runtime still requires the Production env vars set in the Trigger.dev dashboard: `DATABASE_URL`, `LIVEBLOCKS_SECRET_KEY`, `GOOGLE_AI_API_KEY` (or `GOOGLE_GENERATIVE_AI_API_KEY`), `BLOB_READ_WRITE_TOKEN` (Vercel Blob), and optionally `GOOGLE_AI_MODEL`.
+
 ## Architecture Decisions
 
 - Map shadcn/ui CSS variables to the specified custom dark theme tokens (`--bg-base`, etc.) to ensure automatic dark mode style synchronization without customizing the shadcn source code.
