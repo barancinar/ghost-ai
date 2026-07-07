@@ -1,18 +1,10 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
-import {
-  Activity,
-  Plus,
-  Send,
-  Sparkles,
-  MessageSquareCode
-} from "lucide-react"
+import { Activity, Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { EditorNavbar } from "@/components/editor/editor-navbar"
 import { ProjectSidebar } from "@/components/editor/project-sidebar"
 import { ProjectDialogs } from "@/components/editor/project-dialogs"
@@ -21,7 +13,8 @@ import { StarterTemplatesModal } from "@/components/editor/starter-templates-mod
 import { CanvasTemplate } from "@/components/editor/starter-templates"
 import { useProjectActions } from "@/hooks/useProjectActions"
 import { Project } from "@/types/project"
-import { CanvasWrapper } from "@/components/editor/canvas-wrapper"
+import { CanvasWrapper, WorkspaceRoom } from "@/components/editor/canvas-wrapper"
+import { AiSidebar } from "@/components/editor/ai-sidebar"
 import { cn } from "@/lib/utils"
 
 
@@ -36,6 +29,8 @@ export function EditorClient({ projects, activeProject }: EditorClientProps) {
   const [isAiSidebarOpen, setIsAiSidebarOpen] = useState(false)
   const [isShareOpen, setIsShareOpen] = useState(false)
   const [isTemplatesOpen, setIsTemplatesOpen] = useState(false)
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle")
+  const manualSaveRef = useRef<() => void>(undefined)
 
   const {
     activeDialog,
@@ -73,8 +68,10 @@ export function EditorClient({ projects, activeProject }: EditorClientProps) {
         onToggleAiSidebar={() => setIsAiSidebarOpen((prev) => !prev)}
         onOpenShare={() => setIsShareOpen(true)}
         onOpenTemplates={() => setIsTemplatesOpen(true)}
+        saveStatus={saveStatus}
+        onManualSave={() => manualSaveRef.current?.()}
       />
-      
+
       <ProjectSidebar
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
@@ -110,62 +107,29 @@ export function EditorClient({ projects, activeProject }: EditorClientProps) {
         </div>
       ) : (
         /* Workspace Shell Layout */
-        <div className="flex flex-1 flex-row overflow-hidden relative h-[calc(100vh-3.5rem)]">
-          
-          {/* Central Collaborative Canvas */}
-          <section className="flex-1 bg-base relative overflow-hidden select-none">
-            <CanvasWrapper projectId={activeProject.id} />
-          </section>
+        <WorkspaceRoom projectId={activeProject.id}>
+          <div className="flex flex-1 flex-row overflow-hidden relative h-[calc(100vh-3.5rem)]">
 
-          {/* Right Sidebar - AI Assistant Placeholder */}
-          <aside
-            className={cn(
-              "fixed top-14 right-0 bottom-0 z-30 flex w-80 flex-col border-l border-default bg-surface/95 backdrop-blur-md shadow-2xl shadow-black/40 transition-transform duration-300 ease-in-out",
-              isAiSidebarOpen ? "translate-x-0" : "translate-x-[calc(100%+8px)]"
-            )}
-            inert={!isAiSidebarOpen}
-          >
-            {/* Sidebar Header */}
-            <div className="flex h-12 items-center gap-2 border-b border-default px-4">
-              <Sparkles className="h-4 w-4 text-accent-ai" />
-              <h3 className="text-sm font-semibold text-copy-primary">AI Assistant</h3>
-            </div>
+            {/* Central Collaborative Canvas */}
+            <section className="flex-1 bg-base relative overflow-hidden select-none">
+              <CanvasWrapper
+                projectId={activeProject.id}
+                isAiSidebarOpen={isAiSidebarOpen}
+                onSaveStatusChange={setSaveStatus}
+                onManualSaveRef={manualSaveRef}
+              />
+            </section>
 
-            {/* Sidebar Content */}
-            <ScrollArea className="flex-1 p-4">
-              <div className="space-y-4">
-                <div className="rounded-2xl bg-elevated/40 border border-default p-4 flex flex-col gap-2">
-                  <div className="flex items-center gap-1.5 text-xs font-semibold text-accent-ai-text">
-                    <MessageSquareCode className="h-3.5 w-3.5" />
-                    <span>Ghost AI Chat</span>
-                  </div>
-                  <p className="text-[11px] text-copy-secondary leading-relaxed">
-                    Hello! I am your AI designer. Soon, you'll be able to type natural language instructions here to automatically generate and mutate canvas architecture.
-                  </p>
-                </div>
-                
-                <div className="text-[10px] text-copy-muted text-center pt-2">
-                  Future AI updates will integrate Trigger.dev background workflows.
-                </div>
-              </div>
-            </ScrollArea>
+            {/* Right Sidebar - AI Assistant (shares the workspace room so it can
+                subscribe to the shared ai-status-feed and presence) */}
+            <AiSidebar
+              isOpen={isAiSidebarOpen}
+              onClose={() => setIsAiSidebarOpen(false)}
+              projectId={activeProject.id}
+            />
 
-            {/* Mock Chat Input at bottom */}
-            <div className="p-4 border-t border-default bg-surface/50">
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Ask Ghost AI to design..."
-                  className="bg-elevated border-default text-xs rounded-xl h-9"
-                  disabled
-                />
-                <Button size="icon" className="bg-accent-ai hover:bg-accent-ai/90 text-white rounded-xl h-9 w-9 flex items-center justify-center shrink-0" disabled>
-                  <Send className="h-3.5 w-3.5" />
-                </Button>
-              </div>
-            </div>
-          </aside>
-
-        </div>
+          </div>
+        </WorkspaceRoom>
       )}
 
       {/* Project Mutation Dialogs */}

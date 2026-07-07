@@ -10,6 +10,9 @@ import { ReactFlowProvider } from "@xyflow/react";
 
 interface CanvasWrapperProps {
   projectId: string;
+  isAiSidebarOpen?: boolean;
+  onSaveStatusChange?: (status: "idle" | "saving" | "saved" | "error") => void;
+  onManualSaveRef?: React.MutableRefObject<(() => void) | undefined>;
 }
 
 function CanvasLoadingFallback() {
@@ -54,24 +57,53 @@ function CanvasErrorFallback() {
   );
 }
 
-export function CanvasWrapper({ projectId }: CanvasWrapperProps) {
+/**
+ * Provides the Liveblocks room for a project workspace. This intentionally
+ * wraps BOTH the collaborative canvas and the AI sidebar so they share a single
+ * room connection — letting the sidebar subscribe to the shared `ai-status-feed`
+ * and read/update presence alongside the canvas, instead of standing up a
+ * parallel realtime channel.
+ */
+export function WorkspaceRoom({
+  projectId,
+  children,
+}: {
+  projectId: string;
+  children: React.ReactNode;
+}) {
   return (
     <LiveblocksProvider authEndpoint="/api/liveblocks-auth">
       <RoomProvider
         id={projectId}
         initialPresence={{
           cursor: null,
-          isThinking: false,
+          thinking: false,
         }}
       >
-        <ErrorBoundary fallback={<CanvasErrorFallback />}>
-          <ClientSideSuspense fallback={<CanvasLoadingFallback />}>
-            <ReactFlowProvider>
-              <CollaborativeCanvas />
-            </ReactFlowProvider>
-          </ClientSideSuspense>
-        </ErrorBoundary>
+        {children}
       </RoomProvider>
     </LiveblocksProvider>
+  );
+}
+
+export function CanvasWrapper({
+  projectId,
+  isAiSidebarOpen = false,
+  onSaveStatusChange,
+  onManualSaveRef,
+}: CanvasWrapperProps) {
+  return (
+    <ErrorBoundary fallback={<CanvasErrorFallback />}>
+      <ClientSideSuspense fallback={<CanvasLoadingFallback />}>
+        <ReactFlowProvider>
+          <CollaborativeCanvas
+            projectId={projectId}
+            isAiSidebarOpen={isAiSidebarOpen}
+            onSaveStatusChange={onSaveStatusChange}
+            onManualSaveRef={onManualSaveRef}
+          />
+        </ReactFlowProvider>
+      </ClientSideSuspense>
+    </ErrorBoundary>
   );
 }

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getClerkIdentity, checkProjectAccess } from "@/lib/project-access";
-import { currentUser } from "@clerk/nextjs/server";
 import { getLiveblocksClient, getUserColor } from "@/lib/liveblocks";
 
 export const dynamic = "force-dynamic";
@@ -8,13 +7,8 @@ export const dynamic = "force-dynamic";
 export async function POST(request: Request) {
   try {
     // 1. Require Clerk authentication
-    const identity = await getClerkIdentity();
+    const identity = await getClerkIdentity(request);
     if (!identity) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
-
-    const clerkUser = await currentUser();
-    if (!clerkUser) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
@@ -57,13 +51,13 @@ export async function POST(request: Request) {
 
     // 5. Generate deterministic user metadata
     const displayName =
-      clerkUser.firstName && clerkUser.lastName
-        ? `${clerkUser.firstName} ${clerkUser.lastName}`
-        : clerkUser.username ||
-          clerkUser.emailAddresses[0]?.emailAddress ||
+      identity.firstName && identity.lastName
+        ? `${identity.firstName} ${identity.lastName}`
+        : identity.username ||
+          identity.primaryEmail ||
           "Anonymous";
 
-    const avatarUrl = clerkUser.imageUrl || "";
+    const avatarUrl = identity.imageUrl || "";
     const cursorColor = getUserColor(identity.userId);
 
     // 6. Return a session token with the user info and permission

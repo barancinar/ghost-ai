@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@clerk/ui/themes/shadcn.css";
+@import "../node_modules/@clerk/ui/dist/themes/shadcn.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -30,6 +30,11 @@
     --color-accent-dim: var(--accent-primary-dim);
     --color-accent-ai: var(--accent-ai);
     --color-accent-ai-text: var(--accent-ai-text);
+    --color-accent-green: var(--accent-green);
+
+    --color-primary-text: var(--text-primary);
+    --color-muted-text: var(--text-muted);
+    --color-accent-text: var(--accent-ai-text);
 
     --color-state-error: var(--state-error);
     --color-state-success: var(--state-success);
@@ -81,6 +86,9 @@
     --accent-primary-dim: rgba(0, 200, 212, 0.12);
     --accent-ai: #6457f9;
     --accent-ai-text: #8b82ff;
+    /* Green chat accent — user chat bubbles & the design submit button
+       (matches the Green node palette pair in ui-context.md). */
+    --accent-green: #62c073;
     --state-error: #ff4d4f;
     --state-success: #34d399;
     --state-warning: #fbbf24;
@@ -133,4 +141,59 @@
 
 .react-flow__pane {
   background-color: var(--bg-base) !important;
+}
+
+/* Themed scrollbar — slim, transparent track, accent hover. Matches the dark
+   surface tokens so native `overflow` regions blend with the app chrome. */
+.themed-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-subtle) transparent;
+}
+.themed-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.themed-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.themed-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--border-subtle);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.themed-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--accent-ai);
+}
+
+/* AI Sidebar Specific Theme Overrides */
+.theme-ai {
+  --accent: var(--accent-ai);
+  --accent-foreground: var(--text-primary);
+}
+
+.theme-ai .text-accent {
+  color: var(--accent-ai-text);
+}
+
+.theme-ai .text-accent-text {
+  color: var(--accent-ai-text);
+}
+
+.theme-ai .text-primary-text {
+  color: var(--text-primary);
+}
+
+.theme-ai .text-muted-text {
+  color: var(--text-muted);
+}
+
+/*
+ * Hide the "Powered by Liveblocks" badge. Liveblocks injects a fixed-position
+ * div with id `liveblocks-badge` into <body> at runtime.
+ * NOTE: Removing this badge officially requires a paid Liveblocks plan (toggled
+ * from the dashboard). This CSS is a client-side hide only.
+ */
+#liveblocks-badge {
+  display: none !important;
 }
