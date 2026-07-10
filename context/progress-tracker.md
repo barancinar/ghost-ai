@@ -50,6 +50,7 @@ Update this file whenever the current phase, active feature, or implementation s
 ## Next Up
 
 - Phase 2: Collaborative Canvas Features & AI Generation
+- Canvas versioning & snapshot history — spec drafted ([31-canvas-versioning.md](../context/feature-specs/31-canvas-versioning.md)), not yet implemented. Adds a `CanvasSnapshot` model (metadata) + Vercel Blob snapshot JSON, manual checkpoints, automatic pre-AI snapshots in the design agent, and a `mutateFlow`-based restore route. Follow-up spec will cover the history-panel UI.
 
 ## Open Questions
 
