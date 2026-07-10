@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { invalidateProjectCache } from "@/lib/project-access";
 import { slugify } from "@/lib/utils";
 import type { Project } from "@/app/generated/prisma/client";
 
@@ -56,6 +57,7 @@ export async function PATCH(
       where: { id: projectId },
       data: { name }
     })) as Project;
+    invalidateProjectCache(projectId);
 
     return NextResponse.json({
       id: updatedProject.id,
@@ -119,6 +121,7 @@ export async function DELETE(
     await prisma.project.delete({
       where: { id: projectId }
     });
+    invalidateProjectCache(projectId);
 
     return NextResponse.json({ success: true });
   } catch (error) {

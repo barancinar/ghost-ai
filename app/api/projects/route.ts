@@ -1,6 +1,7 @@
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getCachedClerkUser } from "@/lib/project-access";
 import { slugify } from "@/lib/utils";
 import type { Project } from "@/app/generated/prisma/client";
 
@@ -14,8 +15,8 @@ export async function GET() {
       );
     }
 
-    const user = await currentUser();
-    const emails = user?.emailAddresses.map((e) => e.emailAddress) || [];
+    const user = await getCachedClerkUser(userId);
+    const emails = user?.emailAddresses.map((e: { emailAddress: string }) => e.emailAddress) || [];
 
     const projects = (await prisma.project.findMany({
       where: {
